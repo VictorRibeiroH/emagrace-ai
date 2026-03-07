@@ -17,14 +17,14 @@ describe('Calculations Utils', () => {
 
     it('should calculate BMR for female correctly', () => {
       const bmr = calculateBMR(60, 165, 25, Sex.FEMALE);
-      // BMR = 10 * 60 + 6.25 * 165 - 5 * 25 - 161 = 1376.25
-      expect(bmr).toBe(1376.25);
+      // BMR = 10 * 60 + 6.25 * 165 - 5 * 25 - 161 = 1345.25
+      expect(bmr).toBe(1345.25);
     });
 
     it('should calculate BMR for other gender correctly', () => {
       const bmr = calculateBMR(70, 175, 28, Sex.OTHER);
-      // BMR = 10 * 70 + 6.25 * 175 - 5 * 28 - 78 = 1649.75
-      expect(bmr).toBe(1649.75);
+      // BMR = 10 * 70 + 6.25 * 175 - 5 * 28 - 78 = 1575.75
+      expect(bmr).toBe(1575.75);
     });
   });
 
@@ -93,7 +93,7 @@ describe('Calculations Utils', () => {
 
       expect(macros.protein).toBe(154); // 70 * 2.2
       expect(macros.fat).toBe(56); // 70 * 0.8
-      expect(macros.carbs).toBe(281); // (2200 - 616 - 504) / 4
+      expect(macros.carbs).toBe(270); // (2200 - 616 - 504) / 4 = 1080 / 4
     });
   });
 });

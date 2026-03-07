@@ -1,0 +1,20 @@
+{
+  // Disable Prisma datamodel diagnostics to avoid false positives
+  // about 'url' being deprecated (we use Prisma 5.x, not 7.x)
+  "prisma.showPrismaDatamodelDiagnostics": false,
+  
+  // TypeScript settings
+  "typescript.tsdk": "node_modules/typescript/lib",
+  
+  // Editor settings
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  
+  // File associations
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}

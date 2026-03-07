@@ -1,0 +1,136 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Sex {
+    MALE
+    FEMALE
+    OTHER
+}
+
+enum ActivityLevel {
+    SEDENTARY
+    LIGHTLY_ACTIVE
+    MODERATELY_ACTIVE
+    VERY_ACTIVE
+    EXTREMELY_ACTIVE
+}
+
+enum DietType {
+    CUTTING
+    MAINTENANCE
+    BULKING
+}
+
+model User {
+    id            String         @id @default(uuid())
+    email         String         @unique
+    name          String
+    height        Float? // in cm
+    age           Int?
+    sex           Sex?
+    activityLevel ActivityLevel? @map("activity_level")
+    createdAt     DateTime       @default(now()) @map("created_at")
+    updatedAt     DateTime       @updatedAt @map("updated_at")
+
+    // Relations
+    bodyMetrics    BodyMetric[]
+    progressPhotos ProgressPhoto[]
+    diets          Diet[]
+    goals          Goal[]
+
+    @@map("users")
+}
+
+model BodyMetric {
+    id        String   @id @default(uuid())
+    userId    String   @map("user_id")
+    weight    Float? // in kg
+    waist     Float? // in cm
+    chest     Float? // in cm
+    arm       Float? // in cm
+    thigh     Float? // in cm
+    bodyFat   Float?   @map("body_fat") // percentage
+    date      DateTime @default(now())
+    createdAt DateTime @default(now()) @map("created_at")
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, date])
+    @@map("body_metrics")
+}
+
+model ProgressPhoto {
+    id            String   @id @default(uuid())
+    userId        String   @map("user_id")
+    frontPhotoUrl String?  @map("front_photo_url")
+    sidePhotoUrl  String?  @map("side_photo_url")
+    backPhotoUrl  String?  @map("back_photo_url")
+    date          DateTime @default(now())
+    createdAt     DateTime @default(now()) @map("created_at")
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, date])
+    @@map("progress_photos")
+}
+
+model Diet {
+    id        String   @id @default(uuid())
+    userId    String   @map("user_id")
+    type      DietType
+    calories  Int
+    protein   Float // in grams
+    carbs     Float // in grams
+    fat       Float // in grams
+    createdAt DateTime @default(now()) @map("created_at")
+
+    // Relations
+    user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    meals Meal[]
+
+    @@index([userId])
+    @@map("diets")
+}
+
+model Meal {
+    id        String   @id @default(uuid())
+    dietId    String   @map("diet_id")
+    mealName  String   @map("meal_name") // e.g., "Breakfast", "Lunch"
+    foodName  String   @map("food_name")
+    quantity  String // e.g., "100g", "2 units"
+    calories  Int
+    protein   Float // in grams
+    carbs     Float // in grams
+    fat       Float // in grams
+    createdAt DateTime @default(now()) @map("created_at")
+
+    // Relations
+    diet Diet @relation(fields: [dietId], references: [id], onDelete: Cascade)
+
+    @@index([dietId])
+    @@map("meals")
+}
+
+model Goal {
+    id            String    @id @default(uuid())
+    userId        String    @map("user_id")
+    targetWeight  Float?    @map("target_weight") // in kg
+    targetBodyFat Float?    @map("target_body_fat") // percentage
+    deadline      DateTime?
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@map("goals")
+}

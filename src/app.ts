@@ -16,12 +16,26 @@ import goalRoutes from './modules/goals/goals.routes';
 export const createApp = (): Application => {
   const app = express();
 
+  app.use((req: Request, res: Response, next) => {
+    const startedAt = Date.now();
+
+    res.on('finish', () => {
+      const durationMs = Date.now() - startedAt;
+      // eslint-disable-next-line no-console
+      console.log(`${req.method} ${req.originalUrl} ${res.statusCode} - ${durationMs}ms`);
+    });
+
+    next();
+  });
+
   // Security middleware
   app.use(helmet());
-  app.use(cors({
-    origin: config.cors.origin,
-    credentials: true,
-  }));
+  app.use(
+    cors({
+      origin: config.cors.origin,
+      credentials: true,
+    })
+  );
 
   // Rate limiting
   const limiter = rateLimit({

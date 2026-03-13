@@ -23,6 +23,7 @@ Thumbs.db
 
 # Testing
 coverage/
+api-test.html
 
 # Logs
 logs/
